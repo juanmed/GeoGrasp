@@ -177,7 +177,7 @@ void GeoGrasp::compute() {
     (backNormalVector.norm() * worldZVector.norm()));
 
   // Compute initial points accordingly
-  if (backWorldZAngleCos > 0.9) {
+  if (false){ //(backWorldZAngleCos > 0.9) {
     std::cout << "Camera in top view\n";
     findInitialPointsInTopView();
   }
@@ -193,8 +193,8 @@ void GeoGrasp::compute() {
     return;
   }
 
-  float objWidth = pcl::geometry::distance(this->firstGraspPoint.getVector3fMap(),
-    this->secondGraspPoint.getVector3fMap());
+  float objWidth = pcl::geometry::distance(this->firstGraspPoint,
+    this->secondGraspPoint);
 
   if (graspRadius * 2.0 >= objWidth)
     graspRadius = objWidth * 0.7 / 2.0;
@@ -413,7 +413,8 @@ void GeoGrasp::findInitialPointsInSideView() {
   }
 }
 
-void GeoGrasp::findInitialPointsInTopView() {
+void GeoGrasp::findInitialPointsInTopView() 
+{
   // Background plane normal and object main axis angle
   Eigen::Vector3f objAxisVector(this->objectAxisCoeff->values[3],
                                 this->objectAxisCoeff->values[4],
@@ -628,8 +629,8 @@ void GeoGrasp::getBestGraspingPoints(
   for (size_t i = 0; i < firstNormalCloud->points.size(); ++i) {
     pcl::PointNormal thisPoint = firstNormalCloud->points[i];
     Eigen::Vector3f thisVector(thisPoint.x, thisPoint.y, thisPoint.z);
-    float pointCentroidDistance = pcl::geometry::distance(thisVector, 
-      centroidVector);
+    float pointCentroidDistance = (thisVector - centroidVector).norm();//pcl::geometry::distance(thisVector, 
+      //centroidVector);
     float pointGraspPlaneDistance = graspHyperplane.absDistance(thisVector);
     float pointCurvature = thisPoint.curvature;
 
@@ -661,8 +662,8 @@ void GeoGrasp::getBestGraspingPoints(
   for (size_t i = 0; i < secondNormalCloud->points.size(); ++i) {
     pcl::PointNormal thisPoint = secondNormalCloud->points[i];
     Eigen::Vector3f thisVector(thisPoint.x, thisPoint.y, thisPoint.z);
-    float pointCentroidDistance = pcl::geometry::distance(thisVector, 
-      centroidVector);
+    float pointCentroidDistance = (thisVector - centroidVector).norm();//pcl::geometry::distance(thisVector, 
+      //centroidVector);
     float pointGraspPlaneDistance = graspHyperplane.absDistance(thisVector);
     float pointCurvature = thisPoint.curvature;
 
@@ -691,12 +692,9 @@ void GeoGrasp::getBestGraspingPoints(
   Eigen::Vector3f secondInitialVector(secondInitialPoint.x,
                                       secondInitialPoint.y,
                                       secondInitialPoint.z);
-  float initialPointsDistance = pcl::geometry::distance(firstInitialVector, 
-    secondInitialVector);
-  float firstMinDistance = pcl::geometry::distance(firstInitialVector, 
-    centroidVector);
-  float secondMinDistance = pcl::geometry::distance(secondInitialVector, 
-    centroidVector);
+  float initialPointsDistance = (firstInitialVector -secondInitialVector).norm();
+  float firstMinDistance = (firstInitialVector - centroidVector).norm();
+  float secondMinDistance = (secondInitialVector - centroidVector).norm();
   float pointRank1 = 0.0, pointRank2 = 0.0, pointRank = 0.0;
   float epsilon = 1e-8; // Needed to avoid division by zero
 
@@ -709,10 +707,8 @@ void GeoGrasp::getBestGraspingPoints(
   for (size_t i = 0; i < firstNormalCloud->points.size(); ++i) {
     pcl::PointNormal firstPoint = firstNormalCloud->points[i];
     Eigen::Vector3f firstVector(firstPoint.x, firstPoint.y, firstPoint.z);
-    float firstPointSecondInitialDistance = pcl::geometry::distance(firstVector, 
-      secondInitialVector);
-    float firstPointCentroidDistance = pcl::geometry::distance(firstVector, 
-      centroidVector);
+    float firstPointSecondInitialDistance = (firstVector - secondInitialVector).norm();
+    float firstPointCentroidDistance = (firstVector -centroidVector).norm();
     firstPointCentroidDistance = (firstPointCentroidDistance + epsilon - 
       firstCentroidDistanceMin) / (firstCentroidDistanceMax - 
       firstCentroidDistanceMin);
@@ -738,12 +734,9 @@ void GeoGrasp::getBestGraspingPoints(
     for (size_t j = 0; j < secondNormalCloud->points.size(); ++j) {
       pcl::PointNormal secondPoint = secondNormalCloud->points[j];
       Eigen::Vector3f secondVector(secondPoint.x, secondPoint.y, secondPoint.z);
-      float graspPointsDistance = pcl::geometry::distance(firstVector, 
-        secondVector);
-      float secondPointFirstInitialDistance = pcl::geometry::distance(
-        secondVector, firstInitialVector);
-      float secondPointCentroidDistance = pcl::geometry::distance(secondVector, 
-        centroidVector);
+      float graspPointsDistance = (firstVector - secondVector).norm();
+      float secondPointFirstInitialDistance = (secondVector - firstInitialVector).norm();
+      float secondPointCentroidDistance = (secondVector - centroidVector).norm();
       secondPointCentroidDistance = (secondPointCentroidDistance + epsilon - 
         secondCentroidDistanceMin) / (secondCentroidDistanceMax - 
         secondCentroidDistanceMin);

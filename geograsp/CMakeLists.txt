@@ -23,20 +23,20 @@ add_library(GeoGrasp
   lib/${PROJECT_NAME}/GeoGrasp.cpp
 )
 
-add_executable(cloud_processor src/cloud_processor.cpp)
+#add_executable(cloud_processor src/cloud_processor.cpp)
 
-target_link_libraries(cloud_processor
-  GeoGrasp
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(cloud_processor
+#  GeoGrasp
+#  ${catkin_LIBRARIES}
+#)
 
-install(TARGETS GeoGrasp
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+#install(TARGETS GeoGrasp
+#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
 
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-  PATTERN ".svn" EXCLUDE)
+#install(DIRECTORY include/${PROJECT_NAME}/
+#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#  FILES_MATCHING PATTERN "*.h"
+#  PATTERN ".svn" EXCLUDE)
